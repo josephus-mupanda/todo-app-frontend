@@ -5,8 +5,6 @@ import '../../../core/constants/constants.dart';
 import '../../../core/layout/responsive_widget.dart';
 import '../../../core/utils/images.dart';
 import '../../../core/utils/preferences.dart';
-import '../../../core/utils/toast.dart';
-import '../../../data/models/user_role.dart';
 import '../../../routes/app_routes.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -47,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     } else if (hasSeenOnboarding == true) {
       Navigator.pushReplacementNamed(context, AppRoutes.login);
     } else {
-      Navigator.pushReplacementNamed(context, AppRoutes.);
+      Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
     }
   }
 
