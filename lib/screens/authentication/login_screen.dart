@@ -1,5 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_frontend/data/models/auth_dto.dart';
+import 'package:todo_frontend/data/providers/auth_provider.dart';
 import 'package:todo_frontend/screens/onboarding/page_right_screen.dart';
 import '../../../core/constants/constants.dart';
 import '../../../core/layout/responsive_widget.dart';
@@ -8,11 +10,7 @@ import '../../../core/utils/loading.dart';
 import '../../../core/utils/toast.dart';
 import '../../../core/widgets/button_widget.dart';
 import '../../../core/widgets/input_widget.dart';
-import '../../../data/services/auth_service.dart';
 import '../../../routes/app_routes.dart';
-
-final dio = Dio(BaseOptions(baseUrl: 'http://localhost:8080'));
-final authService = AuthService(dio);
 
 
 class LoginScreen extends StatefulWidget {
@@ -38,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       body: Container(
-        constraints: const BoxConstraints(maxWidth: Constants.kMaxWidth ?? double.infinity),
+        constraints: const BoxConstraints(maxWidth: Constants.kMaxWidth),
         child: SafeArea(
           child: Column(
             children: [
@@ -259,14 +257,28 @@ class _LoginScreenState extends State<LoginScreen> {
     showLoadingDialog(context);
 
     try {
-      final result = await authService.login(email: username!, password: password!);
-        if (result.hashCode == 200) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+        // Build the DTO object
+        final loginDTO = LoginDTO(
+          email: username!, 
+          password: password!,
+        );
+
+        // Call login
+        await authProvider.login(context, loginDTO);
+
+        if (!context.mounted) return;
+        Navigator.of(context).pop(); // Close the loading dialog
+
+        // If login was successful, AuthProvider will have a user set
+        if (authProvider.isAuthenticated) {
           showSuccessToast(context, "Login successful!");
-        } else {
-          showErrorToast(context, result?.message ?? "Login failed");
-        }
           Navigator.pushReplacementNamed(context, AppRoutes.home);
+        } else {
+          showErrorToast(context, "Invalid credentials. Please try again.");
         }
+      }
       catch (e) {
       if (!context.mounted) return ;
       Navigator.of(context).pop();
