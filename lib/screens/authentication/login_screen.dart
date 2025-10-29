@@ -1,17 +1,19 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_frontend/screens/onboarding/page_right_screen.dart';
 import '../../../core/constants/constants.dart';
 import '../../../core/layout/responsive_widget.dart';
 import '../../../core/utils/images.dart';
 import '../../../core/utils/loading.dart';
-import '../../../core/utils/preferences.dart';
 import '../../../core/utils/toast.dart';
 import '../../../core/widgets/button_widget.dart';
 import '../../../core/widgets/input_widget.dart';
-import '../../../data/models/user.dart';
-import '../../../data/models/user_role.dart';
 import '../../../data/services/auth_service.dart';
 import '../../../routes/app_routes.dart';
-import '../../onboarding/screens/page_right_screen.dart';
+
+final dio = Dio(BaseOptions(baseUrl: 'http://localhost:8080'));
+final authService = AuthService(dio);
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -23,8 +25,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
 
   String? username, password;
-
-  final _authService = AuthService(); // Initialize AuthService
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -233,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 // Only show the right-side panel on desktop screens
-                                if (Responsive.isDesktop(context)) // Adjust this to the right place
+                                if (Responsive.isDesktop(context)) 
                                   const PageRightSide(
                                     title: "Welcome Back,\nLogin to continue your adventure! 👋",
                                     icon: ImagePath.loginSvg,
@@ -254,53 +254,20 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
   Future<void> _login(BuildContext context) async {
-    final user = User(
-      username: username!,
-      password: password!,
-    );
+ 
     // Show loading dialog
     showLoadingDialog(context);
 
     try {
-      final token = await _authService.login(context, user);
-      if (token != null) {
-        // Reset the form fields
-        _formKey.currentState?.reset(); // Clear the form
-        setState(() {
-          username = null;
-          password = null;
-        });
-        Navigator.of(context).pop();
-        // Get role from preferences or API
-        final roleString = Preferences.getRole();
-        final userRole = UserRoleExtension.fromString(roleString!);
-        // Navigate based on the enum role
-        switch (userRole) {
-          case UserRole.FAO:
-            Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
-            break;
-          case UserRole.FARMER_OR_FOOD_PROCESSOR:
-            Navigator.pushReplacementNamed(context, AppRoutes.farmerDashboard);
-            break;
-          case UserRole.INSPECTOR:
-            Navigator.pushReplacementNamed(context, AppRoutes.inspectorDashboard);
-            break;
-          default:
-            showErrorToast(context, "Invalid role"); // Handle invalid roles
-
+      final result = await authService.login(email: username!, password: password!);
+        if (result.hashCode == 200) {
+          showSuccessToast(context, "Login successful!");
+        } else {
+          showErrorToast(context, result?.message ?? "Login failed");
         }
-      }
-    } on AuthException catch (e) {
-      // Check the status code and show the appropriate message
-      if (!context.mounted) return ;
-      if (e.statusCode == 401) {
-        showErrorToast(context, e.message); // Handle unauthorized
-      } else if (e.statusCode == 403) {
-        showWarningToast(context, e.message); // Handle forbidden
-      } else {
-        showErrorToast(context, e.message); // Other errors
-      }
-    } catch (e) {
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        }
+      catch (e) {
       if (!context.mounted) return ;
       Navigator.of(context).pop();
       showErrorToast(context, "An unexpected error occurred.");

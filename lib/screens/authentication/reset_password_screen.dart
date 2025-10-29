@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:todo_frontend/screens/onboarding/page_right_screen.dart';
 
 import '../../../core/constants/constants.dart';
 import '../../../core/layout/responsive_widget.dart';
@@ -9,9 +10,7 @@ import '../../../core/utils/loading.dart';
 import '../../../core/utils/toast.dart';
 import '../../../core/widgets/button_widget.dart';
 import '../../../core/widgets/input_widget.dart';
-import '../../../data/services/user_service.dart';
 import '../../../routes/app_routes.dart';
-import '../../onboarding/screens/page_right_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -26,7 +25,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   final _emailRegex = RegExp(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"); // Example email regex
 
-  final _userService = UserService(); // Initialize UserService
+  // final _userService = UserService(); // Initialize UserService
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
