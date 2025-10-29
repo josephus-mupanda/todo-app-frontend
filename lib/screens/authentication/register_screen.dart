@@ -1,9 +1,8 @@
-import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_frontend/api/api/authentication_api.dart';
-import 'package:todo_frontend/data/services/auth_service.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_frontend/data/models/auth_dto.dart';
+import 'package:todo_frontend/data/providers/auth_provider.dart';
 import 'package:todo_frontend/screens/onboarding/page_right_screen.dart';
 import '../../../core/constants/constants.dart';
 import '../../../core/layout/responsive_widget.dart';
@@ -13,9 +12,6 @@ import '../../../core/utils/toast.dart';
 import '../../../core/widgets/button_widget.dart';
 import '../../../core/widgets/input_widget.dart';
 import '../../../routes/app_routes.dart';
-
-final dio = Dio(BaseOptions(baseUrl: 'http://localhost:8080'));
-final authService = AuthService(dio);
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -42,7 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return Scaffold(
       body: Container(
-        constraints: const BoxConstraints(maxWidth: Constants.kMaxWidth ?? double.infinity),
+        constraints: const BoxConstraints(maxWidth: Constants.kMaxWidth),
         child: SafeArea(
           child: Column(
             children: [
@@ -304,26 +300,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
   Future<void> _registerUser(BuildContext context) async {
-    final newUser = User(
-      username: username!,
-      password: password!,
-      email: email,
-      phoneNumber: phoneNumber,
-      address: address
-    );
-
+   
     // Show loading dialog
     showLoadingDialog(context);
 
     try {
 
-      final response = await authService.register(
-        username: username!,
-        email: email!,
-        password: password!,
-      );
-      Navigator.of(context).pop(); 
-      Navigator.pushNamed(context, AppRoutes.login);
+       // Access AuthProvider
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+        // Prepare DTO
+        final dto = RegisterDTO(
+          username: username!,
+          email: email!,
+          password: password!,
+        );
+
+        // Attempt registration
+        await authProvider.register(context, dto);
+
+        if (!context.mounted) return;
+
+        Navigator.of(context).pop(); // Close loading dialog
+
+        if (authProvider.user != null) {
+          showSuccessToast(context, "Registration successful! Check your email for confirmation.");
+          Navigator.pushReplacementNamed(context, AppRoutes.login);
+        } else {
+          showWarningToast(context, "Registration failed. Please try again.");
+        }
+
       // Check if the widget is still mounted
     } catch (e) {
       Navigator.of(context).pop(); // Dismiss the loading dialog on error
