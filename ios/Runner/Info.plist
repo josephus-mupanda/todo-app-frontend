@@ -45,5 +45,27 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- 🔗 ADD DEEP LINK CONFIGURATION HERE -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>todoapp</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>todoapp</string>
+			</array>
+		</dict>
+	</array>
+	
+	<!-- For universal links (iOS) -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:your-todo-app.web.app</string>
+		<!-- Change to your actual web domain -->
+	</array>
 </dict>
 </plist>

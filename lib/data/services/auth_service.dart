@@ -85,4 +85,24 @@ class AuthService {
       showErrorToast(context, "Error: ${e.toString()}");
     }
   }
+  Future<http.Response?> resetPassword(BuildContext context, String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/reset-password'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email}),
+      );
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        showSuccessToast(context, data['message'] ?? "Reset link sent to your email.");
+      } else {
+        showErrorToast(context, data['message'] ?? "Failed to reset password.");
+      }
+      return response;
+    } catch (e) {
+      showErrorToast(context, "Error: ${e.toString()}");
+      return null;
+    }
+  }
 }

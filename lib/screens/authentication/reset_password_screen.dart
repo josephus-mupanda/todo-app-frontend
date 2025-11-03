@@ -36,7 +36,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
     return Scaffold(
       body: Container(
-        constraints: const BoxConstraints(maxWidth: Constants.kMaxWidth ?? double.infinity),
+        constraints: const BoxConstraints(maxWidth: Constants.kMaxWidth),
         child: SafeArea(
           child: Column(
             children: [
