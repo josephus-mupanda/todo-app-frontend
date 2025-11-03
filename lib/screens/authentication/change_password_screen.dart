@@ -1,44 +1,56 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/constants.dart';
 import '../../../core/layout/responsive_widget.dart';
 import '../../../core/utils/images.dart';
-import '../../../core/utils/loading.dart';
 import '../../../core/utils/toast.dart';
 import '../../../core/widgets/button_widget.dart';
 import '../../../core/widgets/input_widget.dart';
-import '../../../data/services/user_service.dart';
 import '../../../routes/app_routes.dart';
-import '../../onboarding/screens/page_right_screen.dart';
+
+import 'package:provider/provider.dart';
+import 'package:todo_frontend/data/providers/auth_provider.dart';
+import 'package:todo_frontend/screens/onboarding/page_right_screen.dart';
+
 
 class ChangePasswordScreen extends StatefulWidget {
-  final String token;
+  final String? resetCode;
 
-  const ChangePasswordScreen({required this.token, super.key});
+  const ChangePasswordScreen({super.key, this.resetCode});
 
   @override
   State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+
   String? newPassword, confirmNewPassword;
-
-  final _userService = UserService(); // Initialize UserService
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   bool showPassword = false;
   bool showConfirmPassword = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // If reset code is provided via deep link, show success message
+    if (widget.resetCode != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showSuccessToast(context, "Reset code loaded successfully!");
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final ThemeData theme = Theme.of(context);
+    
     return Scaffold(
       body: Container(
-        constraints: const BoxConstraints(maxWidth: Constants.kMaxWidth ?? double.infinity),
+        constraints: const BoxConstraints(maxWidth: Constants.kMaxWidth),
         child: SafeArea(
           child: Column(
             children: [
@@ -67,9 +79,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                           child: Card(
                                             color: Theme.of(context).cardColor,
                                             child: Padding(
-                                              padding: Responsive.isMobile(context)?
-                                              const EdgeInsets.all(0):
-                                              const EdgeInsets.all(Constants.kDefaultPadding),
+                                              padding: Responsive.isMobile(context)
+                                                  ? const EdgeInsets.all(0)
+                                                  : const EdgeInsets.all(Constants.kDefaultPadding),
                                               child: Form(
                                                 key: _formKey,
                                                 child: Column(
@@ -77,15 +89,53 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Center(
-                                                      child: Image.asset(ImagePath.companyLogo,
-                                                        height: 100,),
+                                                      child: Image.asset(
+                                                        ImagePath.companyLogo,
+                                                        height: 100,
+                                                      ),
                                                     ),
+                                                    const SizedBox(height: 20),
                                                     Text(
                                                       'Change Password',
                                                       style: theme.textTheme.headlineLarge?.copyWith(
                                                         fontWeight: FontWeight.w700,
                                                       ),
                                                     ),
+                                                    const SizedBox(height: 10),
+                                                    if (widget.resetCode != null)
+                                                      Container(
+                                                        padding: const EdgeInsets.all(12),
+                                                        decoration: BoxDecoration(
+                                                          color: theme.primaryColor.withOpacity(0.1),
+                                                          borderRadius: BorderRadius.circular(8),
+                                                          border: Border.all(color: theme.primaryColor),
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons.check_circle,
+                                                              color: theme.primaryColor,
+                                                              size: 16,
+                                                            ),
+                                                            const SizedBox(width: 8),
+                                                            Expanded(
+                                                              child: Text(
+                                                                'Reset code loaded: ${widget.resetCode}',
+                                                                style: theme.textTheme.bodySmall?.copyWith(
+                                                                  color: theme.primaryColor,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    else
+                                                      Text(
+                                                        'Enter your new password below.',
+                                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                                          color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                                        ),
+                                                      ),
                                                     const SizedBox(height: 30),
                                                     InputWidget(
                                                       obscureText: !showPassword,
@@ -107,13 +157,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                       ),
                                                       onChanged: (String? value) => newPassword = value!,
                                                       validator: (String? value) {
-                                                        return value!.isEmpty
-                                                            ? "Field is required"
-                                                            : value.length < 6
-                                                            ? "Password must be at least 6 characters"
-                                                            : null;
+                                                        if (value == null || value.isEmpty) {
+                                                          return "Password is required";
+                                                        }
+                                                        if (value.length < 6) {
+                                                          return "Password must be at least 6 characters";
+                                                        }
+                                                        return null;
                                                       },
                                                     ),
+                                                    const SizedBox(height: 20),
                                                     InputWidget(
                                                       obscureText: !showConfirmPassword,
                                                       hintText: 'Confirm New Password',
@@ -134,25 +187,55 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                       ),
                                                       onChanged: (String? value) => confirmNewPassword = value!,
                                                       validator: (String? value) {
-                                                        return value!.isEmpty
-                                                            ? "Field is required"
-                                                            : value.length < 6
-                                                            ? "Password must be at least 6 characters"
-                                                            : value != newPassword
-                                                            ? "Passwords do not match"
-                                                            : null;
-                                                      },
-                                                    ),
-                                                    const SizedBox(height: 10),
-                                                    AppButton(
-                                                      onPressed: () async {
-                                                        if (_formKey.currentState?.validate() ?? false) {
-                                                          await _changePassword(context);
+                                                        if (value == null || value.isEmpty) {
+                                                          return "Please confirm your password";
                                                         }
+                                                        if (value.length < 6) {
+                                                          return "Password must be at least 6 characters";
+                                                        }
+                                                        if (value != newPassword) {
+                                                          return "Passwords do not match";
+                                                        }
+                                                        return null;
                                                       },
-                                                      text:  'Change Password',
                                                     ),
                                                     const SizedBox(height: 20),
+                                                    if (_isLoading)
+                                                      const Center(child: CircularProgressIndicator())
+                                                    else
+                                                      AppButton(
+                                                        onPressed: _changePassword,
+                                                        text: 'Change Password',
+                                                      ),
+                                                    const SizedBox(height: 20),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.pushReplacementNamed(
+                                                          context,
+                                                          AppRoutes.login,
+                                                        );
+                                                      },
+                                                      child: Center(
+                                                        child: Text.rich(
+                                                          TextSpan(
+                                                            children: [
+                                                              TextSpan(
+                                                                text: 'Back to ',
+                                                                style: theme.textTheme.bodyMedium?.copyWith(
+                                                                  color: theme.colorScheme.onBackground,
+                                                                ),
+                                                              ),
+                                                              TextSpan(
+                                                                text: 'Login',
+                                                                style: theme.textTheme.bodyMedium?.copyWith(
+                                                                  color: theme.primaryColor,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -185,31 +268,51 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 
-  Future<void> _changePassword(BuildContext context) async {
+  Future<void> _changePassword() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      // Check if we have a reset code
+      if (widget.resetCode == null) {
+        showErrorToast(context, "Reset code is missing. Please request a new reset code.");
+        return;
+      }
 
-    // Show loading dialog
-    showLoadingDialog(context);
+      setState(() => _isLoading = true);
 
-    final response = await _userService.changePassword(widget.token, newPassword!);
-
-    final responseBody = jsonDecode(response.body);
-    String message = responseBody['message'] ?? 'An error occurred';
-
-    // Check if the widget is still mounted
-    if (!context.mounted) return;
-    Navigator.of(context).pop();
-
-    if (response.statusCode == 200) {
-      showSuccessToast(context, message);
-      // Reset the form fields
-      _formKey.currentState?.reset();
-      setState(() {
-        newPassword = null;
-        confirmNewPassword = null;
-      });
-      Navigator.pushReplacementNamed(context, AppRoutes.login);
-    } else {
-      showErrorToast(context, message);
+      try {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        
+        // Call the change password service with reset code and new password
+        final success = await authProvider.changePassword(
+          context, 
+          widget.resetCode!, 
+          newPassword!
+        );
+        
+        if (success && context.mounted) {
+          // Show success message
+          showSuccessToast(context, "Password changed successfully!");
+          
+          // Reset form
+          _formKey.currentState?.reset();
+          setState(() {
+            newPassword = null;
+            confirmNewPassword = null;
+          });
+          
+          // Navigate to login after short delay
+          await Future.delayed(const Duration(seconds: 1));
+          
+          if (context.mounted) {
+            Navigator.pushReplacementNamed(context, AppRoutes.login);
+          }
+        }
+      } catch (e) {
+        // Error is already handled in the service
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
     }
   }
 }

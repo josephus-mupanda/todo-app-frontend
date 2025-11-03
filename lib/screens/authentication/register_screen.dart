@@ -300,40 +300,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
   Future<void> _registerUser(BuildContext context) async {
-   
+
     // Show loading dialog
     showLoadingDialog(context);
 
     try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final dto = RegisterDTO(
+        username: username!,
+        email: email!,
+        password: password!,
+      );
 
-       // Access AuthProvider
-        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      await authProvider.register(context, dto);
 
-        // Prepare DTO
-        final dto = RegisterDTO(
-          username: username!,
-          email: email!,
-          password: password!,
+      if (!context.mounted) return;
+      Navigator.of(context).pop(); // Close loading dialog
+
+      // Check if registration was successful
+      if (authProvider.user != null) {
+        // Show success message (already shown in service)
+        // Navigate to confirm email screen
+        Navigator.pushReplacementNamed(
+          context, 
+          AppRoutes.confirmEmail,
         );
-
-        // Attempt registration
-        await authProvider.register(context, dto);
-
-        if (!context.mounted) return;
-
-        Navigator.of(context).pop(); // Close loading dialog
-
-        if (authProvider.user != null) {
-          showSuccessToast(context, "Registration successful! Check your email for confirmation.");
-          Navigator.pushReplacementNamed(context, AppRoutes.login);
-        } else {
-          showWarningToast(context, "Registration failed. Please try again.");
-        }
-
-      // Check if the widget is still mounted
+      }
+      // If user is null, error toast was already shown in service
     } catch (e) {
-      Navigator.of(context).pop(); // Dismiss the loading dialog on error
-      showErrorToast(context, "An error occurred. Please check your connection and try again.");
+      if (context.mounted) {
+        Navigator.of(context).pop(); // Dismiss the loading dialog on error
+        showErrorToast(context, "An error occurred during registration.");
+      }
     }
   }
 }

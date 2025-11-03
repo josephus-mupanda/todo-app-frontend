@@ -122,7 +122,7 @@ class _MyAppState extends State<MyApp> {
   void _navigateToResetPassword(String code) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       navigatorKey.currentState?.pushNamed(
-        AppRoutes.resetPassword,
+        AppRoutes.changePassword,
         arguments: code,
       );
     });

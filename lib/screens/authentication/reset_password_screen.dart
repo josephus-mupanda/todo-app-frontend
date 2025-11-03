@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:todo_frontend/screens/onboarding/page_right_screen.dart';
@@ -25,7 +24,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   final _emailRegex = RegExp(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"); // Example email regex
 
-  // final _userService = UserService(); // Initialize UserService
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -173,28 +171,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     // Show loading dialog
     showLoadingDialog(context);
 
-    final response = await _userService.resetPassword(email!);
-
-    final responseBody = jsonDecode(response.body);
-    String message = responseBody['message'] ?? 'An error occurred';
+   
     // Check if the widget is still mounted
     if (!context.mounted) return;
     Navigator.of(context).pop();
-
-    if (response.statusCode == 200) {
-      showSuccessToast(context, message);
-      // Reset the form fields
-      _formKey.currentState?.reset();
-      setState(() {
-        email = null;
-      });
-      //Navigator.pushNamed(context, AppRoutes.login);
-    } else if (response.statusCode == 400) {
-      showErrorToast(context, message);
-    } else if (response.statusCode == 404) {
-      showErrorToast(context, message);
-    } else {
-      showErrorToast(context, "An unexpected error occurred");
-    }
+  
   }
 }

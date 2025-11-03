@@ -6,6 +6,7 @@ import 'package:todo_frontend/screens/authentication/not_found_screen.dart';
 import 'package:todo_frontend/screens/authentication/register_screen.dart';
 import 'package:todo_frontend/screens/authentication/reset_password_screen.dart';
 import 'package:todo_frontend/screens/splash/splash_screen.dart';
+import 'package:todo_frontend/screens/tasks/home_screen.dart';
 import '../routes/app_routes.dart';
 
 class RouteGenerator {
@@ -37,20 +38,20 @@ class RouteGenerator {
         );
 
       case AppRoutes.resetPassword:
+        return _buildPageRoute(const ResetPasswordScreen(), settings);
+
+      case AppRoutes.changePassword:
         // Handle both direct navigation and deep links
-        String? resetCode;
+         String? resetCode;
         if (arguments is String) {
           resetCode = arguments;
         } else if (arguments is Map<String, dynamic>) {
           resetCode = arguments['code'] as String?;
         }
         return _buildPageRoute(
-          ResetPasswordScreen(resetCode: resetCode),
+          ChangePasswordScreen(resetCode: resetCode),
           settings,
         );
-
-      case AppRoutes.changePassword:
-        return _buildPageRoute(const ChangePasswordScreen(), settings);
 
       case AppRoutes.home:
         return _buildPageRoute(const HomeScreen(), settings);

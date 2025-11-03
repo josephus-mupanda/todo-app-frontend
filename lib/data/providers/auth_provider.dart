@@ -3,7 +3,7 @@ import 'package:todo_frontend/data/models/auth_dto.dart';
 import 'package:todo_frontend/data/models/user.dart';
 import 'package:todo_frontend/data/services/secure_storage_service.dart';
 import '../services/auth_service.dart';
-
+import 'package:http/http.dart' as http;
 
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -37,4 +37,17 @@ class AuthProvider extends ChangeNotifier {
     _user = null;
     notifyListeners();
   }
+
+  Future<http.Response?> resetPassword(BuildContext context, String email) async {
+    return await _authService.resetPassword(context, email);
+  }
+
+  Future<bool> changePassword(BuildContext context, String code, String newPassword) async {
+    return await _authService.changePassword(context, code, newPassword);
+  }
+
+  Future<bool> confirmEmail(BuildContext context, String code) async {
+    return await _authService.confirmEmail(context, code);
+  }
+
 }
