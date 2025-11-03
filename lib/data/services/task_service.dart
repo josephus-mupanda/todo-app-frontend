@@ -52,6 +52,32 @@ class TaskService {
     }
   }
 
+  // Add this method to your TaskService class
+  Future<void> updateTask(BuildContext context, String id, bool completed) async {
+    try {
+      final token = await _storage.getToken();
+      final response = await http.put(
+        Uri.parse('$baseUrl/$id'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'title': 'Existing Title', // You might need to send the existing title
+          'completed': completed,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        showSuccessToast(context, "Task updated successfully!");
+      } else {
+        showErrorToast(context, "Failed to update task");
+      }
+    } catch (e) {
+      showErrorToast(context, "Error: ${e.toString()}");
+    }
+  }
+
   Future<void> deleteTask(BuildContext context, String id) async {
     try {
       final token = await _storage.getToken();
