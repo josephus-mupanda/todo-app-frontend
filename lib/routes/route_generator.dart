@@ -7,6 +7,8 @@ import 'package:todo_frontend/screens/authentication/register_screen.dart';
 import 'package:todo_frontend/screens/authentication/reset_password_screen.dart';
 import 'package:todo_frontend/screens/splash/splash_screen.dart';
 import 'package:todo_frontend/screens/tasks/home_screen.dart';
+import 'package:todo_frontend/screens/tasks/profile_screen.dart';
+import 'package:todo_frontend/screens/tasks/task_list_screen.dart';
 import '../routes/app_routes.dart';
 
 class RouteGenerator {
@@ -59,36 +61,12 @@ class RouteGenerator {
       case AppRoutes.tasks:
         return _buildPageRoute(const TaskListScreen(), settings);
 
-      case AppRoutes.addTask:
-        return _buildPageRoute(const AddTaskScreen(), settings);
-
-      case AppRoutes.editTask:
-        final taskId = _extractTaskId(arguments);
-        if (taskId == null) {
-          return _errorRoute('Task ID is required for editing');
-        }
-        return _buildPageRoute(EditTaskScreen(taskId: taskId), settings);
-
-      case AppRoutes.taskDetails:
-        final taskId = _extractTaskId(arguments);
-        if (taskId == null) {
-          return _errorRoute('Task ID is required for details');
-        }
-        return _buildPageRoute(TaskDetailsScreen(taskId: taskId), settings);
-
       case AppRoutes.profile:
         return _buildPageRoute(const ProfileScreen(), settings);
 
       default:
         return _errorRoute();
     }
-  }
-
-  // Helper method to extract task ID from various argument types
-  static String? _extractTaskId(dynamic arguments) {
-    if (arguments is String) return arguments;
-    if (arguments is Map<String, dynamic>) return arguments['taskId'] as String?;
-    return null;
   }
 
   // Use PageRouteBuilder for smooth transitions on both platforms
@@ -109,7 +87,7 @@ class RouteGenerator {
     );
   }
 
-  static Route<dynamic> _errorRoute([String message = 'Page not found']) {
+  static Route<dynamic> _errorRoute() {
     return MaterialPageRoute(
       builder: (_) => NotFoundScreen(),
       settings: const RouteSettings(name: '/not-found'),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_frontend/core/widgets/delete_dialog.dart';
+import 'package:todo_frontend/core/widgets/task_details_dialog.dart';
 import 'package:todo_frontend/data/models/task.dart';
 import 'package:todo_frontend/data/providers/task_provider.dart';
 import '../../../core/constants/constants.dart';
@@ -283,8 +285,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
         padding: const EdgeInsets.only(right: 20),
         child: const Icon(Icons.delete, color: Colors.red),
       ),
-      confirmDismiss: (direction) async {
-        return await _showDeleteConfirmation(task);
+      onDismissed: (direction) {
+        _showDeleteConfirmation(task);
       },
       child: Card(
         color: theme.cardColor,
@@ -314,16 +316,13 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 tooltip: task.completed ? 'Mark as Incomplete' : 'Mark as Complete',
               ),
               IconButton(
-                onPressed: () => _deleteTask(task),
+                onPressed: () => _showDeleteConfirmation(task),
                 icon: const Icon(Icons.delete, color: Colors.red),
                 tooltip: 'Delete Task',
               ),
             ],
           ),
-          onTap: () {
-            // Navigate to task details if needed
-            // Navigator.pushNamed(context, AppRoutes.taskDetails, arguments: task.id);
-          },
+          onTap: () => _showTaskDetails(task),
         ),
       ),
     );
@@ -462,6 +461,30 @@ class _TaskListScreenState extends State<TaskListScreen> {
     }
   }
 
+  void _showTaskDetails(Task task) {
+    showDialog(
+      context: context,
+      builder: (context) => TaskDetailsDialog(
+        task: task,
+        onEdit: () => _editTask(task),
+        onToggleComplete: () => _toggleTaskCompletion(task),
+        onDelete: () => _showDeleteConfirmation(task),
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(Task task) {
+    showDialog(
+      context: context,
+      builder: (context) => DeleteConfirmationDialog(
+        title: 'Delete Task',
+        content: 'This action cannot be undone. Are you sure you want to delete this task?',
+        itemName: task.title,
+        onConfirm: () => _deleteTask(task),
+      ),
+    );
+  }
+
   Future<void> _deleteTask(Task task) async {
     try {
       final taskProvider = Provider.of<TaskProvider>(context, listen: false);
@@ -471,27 +494,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
     }
   }
 
-  Future<bool> _showDeleteConfirmation(Task task) async {
-    return await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Delete Task"),
-          content: Text("Are you sure you want to delete '${task.title}'?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text("Delete"),
-            ),
-          ],
-        );
-      },
-    ) ?? false;
+  void _editTask(Task task) {
+    // TODO: Implement edit task functionality
+    showInfoToast(context, "Edit task feature coming soon!");
   }
 
   @override
