@@ -53,9 +53,11 @@ class TaskService {
   }
 
   // Add this method to your TaskService class
-  Future<void> updateTask(BuildContext context, String id, bool completed) async {
+  Future<void> updateTask(BuildContext context, String id,{String? title, bool? completed}) async {
     try {
       final token = await _storage.getToken();
+      
+
       final response = await http.put(
         Uri.parse('$baseUrl/$id'),
         headers: {
@@ -63,8 +65,8 @@ class TaskService {
           'Authorization': 'Bearer $token',
         },
         body: jsonEncode({
-          'title': 'Existing Title', // You might need to send the existing title
-          'completed': completed,
+         'title': title,
+          'completed': completed ?? false,    // send completed if provided
         }),
       );
 

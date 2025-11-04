@@ -158,7 +158,7 @@ class DesktopSplashScreen extends StatelessWidget {
             ), // Replace with your logo
             const SizedBox(height: Constants.kDefaultPadding),
             Text(
-              "SafeHarvest QA - Food Safety and Quality Assurance System",
+              "Todo App - Manage Your Tasks",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -169,7 +169,7 @@ class DesktopSplashScreen extends StatelessWidget {
             ),
             const SizedBox(height: Constants.kDefaultPadding / 2),
             Text(
-              "We Sense Food and We Fight Waste",
+              "Organize your day, manage your tasks, and boost productivity effortlessly.",
               style: TextStyle(
                 fontSize: 16,
                 color: Theme.of(context).colorScheme.onSurface.withValues(

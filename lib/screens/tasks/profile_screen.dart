@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_frontend/core/widgets/alert_widget.dart';
 import 'package:todo_frontend/data/providers/auth_provider.dart';
 import 'package:todo_frontend/data/providers/theme_provider.dart';
 import '../../../core/constants/constants.dart';
 import '../../../core/utils/toast.dart';
 import '../../../core/widgets/button_widget.dart';
-import '../../../routes/app_routes.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -26,21 +24,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    _loadInitialData();
   }
 
-  void _loadUserData() {
+ 
+  void _loadInitialData() {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    if (authProvider.user != null) {
-      _usernameController.text = authProvider.user!.username;
-      _emailController.text = authProvider.user!.email;
-    }
+    _usernameController.text = authProvider.user?.username ?? '';
+    _emailController.text = authProvider.user?.email ?? '';
   }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final authProvider = Provider.of<AuthProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
@@ -53,23 +49,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: ListView(
                   padding: const EdgeInsets.all(Constants.kDefaultPadding),
                   children: [
-                    // Header Section
-                    _buildHeaderSection(theme, authProvider),
 
-                    const SizedBox(height: 32),
+                     Consumer<AuthProvider>(
+                    builder: (context, authProvider, child) {
+                      return Column(
+                        children: [
+                          // Header Section
+                          _buildHeaderSection(theme, authProvider),
 
-                    // Profile Information Card
-                    _buildProfileInfoCard(theme, authProvider),
+                          const SizedBox(height: 32),
 
-                    const SizedBox(height: 24),
+                          // Profile Information Card
+                          _buildProfileInfoCard(theme, authProvider),
 
-                    // App Settings Card
-                    _buildSettingsCard(theme, themeProvider),
+                          const SizedBox(height: 24),
 
-                    const SizedBox(height: 24),
+                          // App Settings Card
+                          _buildSettingsCard(theme, themeProvider),
 
-                    // Actions Card
-                    _buildActionsCard(theme, authProvider),
+                          const SizedBox(height: 24),
+
+                          // Actions Card
+                          _buildActionsCard(theme, authProvider),
+                        ],
+                      );
+                    }),
+                  
                   ],
                 ),
               ),
@@ -444,15 +449,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() => _isLoading = true);
 
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
       try {
-        // Simulate API call - replace with your actual update profile logic
-        await Future.delayed(const Duration(seconds: 2));
+        // Call AuthProvider to update user
+        await authProvider.updateUser(
+          context,
+          username: _usernameController.text.trim(),
+          email: _emailController.text.trim(),
+        );
 
         if (context.mounted) {
           showSuccessToast(context, "Profile updated successfully!");
+
           setState(() {
             _isEditing = false;
           });
+          // Reload initial data to ensure controllers are in sync
+          _loadInitialData();
         }
       } catch (e) {
         if (context.mounted) {
@@ -482,7 +495,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             TextButton(
               onPressed: () async {
-                Navigator.of(dialogContext).pop(); 
+                Navigator.of(dialogContext).pop();
                 final authProvider = Provider.of<AuthProvider>(
                   context,
                   listen: false,

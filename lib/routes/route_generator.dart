@@ -8,8 +8,6 @@ import 'package:todo_frontend/screens/authentication/reset_password_screen.dart'
 import 'package:todo_frontend/screens/onboarding/onboarding_screen.dart';
 import 'package:todo_frontend/screens/splash/splash_screen.dart';
 import 'package:todo_frontend/screens/tasks/home_screen.dart';
-import 'package:todo_frontend/screens/tasks/profile_screen.dart';
-import 'package:todo_frontend/screens/tasks/task_list_screen.dart';
 import '../routes/app_routes.dart';
 
 class RouteGenerator {
@@ -61,13 +59,6 @@ class RouteGenerator {
 
       case AppRoutes.home:
         return _buildPageRoute(const HomeScreen(), settings);
-
-      case AppRoutes.tasks:
-        return _buildPageRoute(const TaskListScreen(), settings);
-
-      case AppRoutes.profile:
-        return _buildPageRoute(const ProfileScreen(), settings);
-
       default:
         return _errorRoute();
     }

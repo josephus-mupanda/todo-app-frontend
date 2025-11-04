@@ -4,19 +4,16 @@ class Constants {
   static const kMaxWidth = 1300.0;
 
   // Onboarding texts
-  static var titleOne = "Ensure Food Safety and Quality";
-  static var descriptionOne = "Monitor and enforce food safety standards at every stage, from farm to table.";
+  static var titleOne = "Manage Your Tasks";
+  static var descriptionOne = "Add, edit, complete, or delete tasks effortlessly to stay organized every day.";
 
-  static var titleTwo = "Stay Compliant with Regulations";
-  static var descriptionTwo = "Track compliance with national and international food safety regulations in one place.";
+  static var titleTwo = "Personalize Your Profile";
+  static var descriptionTwo = "Update your username and email, and keep your account information up-to-date.";
 
-  static var titleThree = "Real-Time Product Tracking";
-  static var descriptionThree = "Use QR codes and advanced traceability to track the origin, condition, and quality of food products.";
+  static var titleThree = "Dark & Light Mode";
+  static var descriptionThree = "Switch between dark and light themes for a comfortable experience anytime.";
 
-  static var titleFour = "Smart Contaminant Detection";
-  static var descriptionFour = "Leverage IoT sensors and real-time alerts to detect contamination and take immediate corrective action.";
-
-  static var titleFive = "Collaborate for Better Food Safety";
-  static var descriptionFive = "Farmers, processors, and regulators work together to uphold the highest standards of food quality and safety.";
+  static var titleFour = "Secure & Reliable";
+  static var descriptionFour = "Register, confirm your email, reset or change your password, and log in safely.";
 
 }

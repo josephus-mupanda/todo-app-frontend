@@ -76,8 +76,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
             _buildSearchFilterSection(theme),
 
             // Add Task Form
-            if (_showAddTaskForm)
-              Expanded(child: _buildAddTaskForm(theme)),
+            if (_showAddTaskForm) Expanded(child: _buildAddTaskForm(theme)),
 
             // Task List
             Expanded(child: _buildTasksList(theme)),
@@ -104,7 +103,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -128,7 +127,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               const SizedBox(width: 12),
               Container(
                 decoration: BoxDecoration(
-                  color: theme.primaryColor.withValues(alpha:0.6),
+                  color: theme.primaryColor.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: IconButton(
@@ -156,8 +155,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     selected: _currentFilter == filter,
                     onSelected: (selected) {
                       setState(() {
-                        _currentFilter =
-                            selected ? filter : TaskFilter.all;
+                        _currentFilter = selected ? filter : TaskFilter.all;
                       });
                     },
                     backgroundColor: theme.cardColor,
@@ -181,7 +179,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
         decoration: BoxDecoration(
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: theme.primaryColor.withValues(alpha:0.6)),
+          border: Border.all(color: theme.primaryColor.withValues(alpha: 0.6)),
         ),
         child: Form(
           key: _formKey,
@@ -194,8 +192,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   Expanded(
                     child: Text(
                       'Add New Task',
-                      style: theme.textTheme.titleLarge
-                          ?.copyWith(fontWeight: FontWeight.w700),
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                   IconButton(
@@ -207,7 +206,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     },
                     icon: Icon(
                       Icons.close,
-                      color: theme.colorScheme.onSurface.withValues(alpha:(0.6),
+                      color: theme.colorScheme.onSurface.withValues(
+                        alpha: (0.6),
+                      ),
                     ),
                   ),
                 ],
@@ -229,8 +230,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               Row(
                 children: [
                   Expanded(
-                    child:
-                        AppButton(onPressed: _addTask, text: 'Create Task'),
+                    child: AppButton(onPressed: _addTask, text: 'Create Task'),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -283,7 +283,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
       direction: DismissDirection.endToStart,
       background: Container(
         decoration: BoxDecoration(
-          color: Colors.red.withValues(alpha:0.6),
+          color: Colors.red.withValues(alpha: 0.6),
           borderRadius: BorderRadius.circular(16),
         ),
         alignment: Alignment.centerRight,
@@ -305,7 +305,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   ? TextDecoration.lineThrough
                   : TextDecoration.none,
               color: task.completed
-                  ? theme.colorScheme.onSurface.withValues(alpha:0.6)
+                  ? theme.colorScheme.onSurface.withValues(alpha: 0.6)
                   : null,
             ),
           ),
@@ -318,8 +318,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   task.completed ? Icons.undo : Icons.check_circle,
                   color: task.completed ? Colors.orange : Colors.green,
                 ),
-                tooltip:
-                    task.completed ? 'Mark as Incomplete' : 'Mark as Complete',
+                tooltip: task.completed
+                    ? 'Mark as Incomplete'
+                    : 'Mark as Complete',
               ),
               IconButton(
                 onPressed: () => _showDeleteConfirmation(task),
@@ -340,8 +341,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
       height: 40,
       decoration: BoxDecoration(
         color: task.completed
-            ? Colors.green.withValues(alpha:0.1)
-            : Colors.orange.withValues(alpha:0.6),
+            ? Colors.green.withValues(alpha: 0.1)
+            : Colors.orange.withValues(alpha: 0.6),
         shape: BoxShape.circle,
       ),
       child: Icon(
@@ -379,7 +380,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
             ),
             textAlign: TextAlign.center,
           ),
-        
         ],
       ),
     );
@@ -387,9 +387,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   List<Task> _getFilteredTasks(List<Task> tasks) {
     final filtered = tasks.where((task) {
-      final matchesSearch =
-          task.title.toLowerCase().contains(_searchQuery.toLowerCase());
-      final matchesFilter = _currentFilter == TaskFilter.all ||
+      final matchesSearch = task.title.toLowerCase().contains(
+        _searchQuery.toLowerCase(),
+      );
+      final matchesFilter =
+          _currentFilter == TaskFilter.all ||
           (_currentFilter == TaskFilter.completed && task.completed) ||
           (_currentFilter == TaskFilter.pending && !task.completed);
       return matchesSearch && matchesFilter;
@@ -415,7 +417,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   Future<void> _toggleTaskCompletion(Task task) async {
-    showInfoToast(context, "Update task feature coming soon!");
+    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+    await taskProvider.updateTaskCompletion(context, task.id, !task.completed);
   }
 
   void _showTaskDetails(Task task) {
@@ -451,7 +454,40 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   void _editTask(Task task) {
-    showInfoToast(context, "Edit task feature coming soon!");
+    final TextEditingController editController = TextEditingController(
+      text: task.title,
+    );
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Edit Task'),
+        content: TextField(
+          controller: editController,
+          decoration: const InputDecoration(labelText: 'Task Title'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final newTitle = editController.text.trim();
+              if (newTitle.isNotEmpty) {
+                final taskProvider = Provider.of<TaskProvider>(
+                  context,
+                  listen: false,
+                );
+                await taskProvider.updateTaskTitle(context, task.id, newTitle);
+              }
+              Navigator.pop(context);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override

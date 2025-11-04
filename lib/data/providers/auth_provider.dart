@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_frontend/core/utils/toast.dart';
 import 'package:todo_frontend/data/models/auth_dto.dart';
 import 'package:todo_frontend/data/models/user.dart';
 import 'package:todo_frontend/data/services/secure_storage_service.dart';
@@ -31,6 +32,42 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> updateUser(
+    BuildContext context, {
+    String? username,
+    String? email,
+  }) async {
+    if (_user == null) return;
+
+    final token = await _storage.getToken();
+    if (token == null) {
+      showErrorToast(context, "No valid session found.");
+      return;
+    }
+
+    final updatedUser = await _authService.updateUser(
+      context,
+      token,
+      username: username,
+      email: email,
+    );
+
+ if (updatedUser != null) {
+    // IMPORTANT: Preserve the token from the current user
+    _user = User(
+      id: updatedUser.id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      token: token, // Use the existing token instead of updatedUser.token
+    );
+    notifyListeners();
+  }
+    // if (updatedUser != null) {
+    //   _user = updatedUser;
+    //   notifyListeners();
+    // }
+  }
+
   Future<void> logout(BuildContext context) async {
     final token = await _storage.getToken();
     await _storage.deleteToken();
@@ -59,13 +96,6 @@ class AuthProvider extends ChangeNotifier {
       }
     }
   }
-  // Future<void> logout(BuildContext context) async {
-  //   final token = await _storage.getToken();
-  //   if (token != null) await _authService.logout(context, token);
-  //   await _storage.deleteToken();
-  //   _user = null;
-  //   notifyListeners();
-  // }
 
   Future<http.Response?> resetPassword(
     BuildContext context,

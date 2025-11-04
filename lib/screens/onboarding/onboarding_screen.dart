@@ -31,7 +31,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   void _nextPage() async {
-    if (currentIndex < 4) {
+    if (currentIndex < 3) {
       currentIndex++;
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -113,11 +113,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                                           title: Constants.titleFour,
                                                           description: Constants.descriptionFour,
                                                         ),
-                                                        CreatePage(
-                                                          image: ImagePath.onBoardingImageFive,
-                                                          title: Constants.titleFive,
-                                                          description: Constants.descriptionFive,
-                                                        ),
+                                                      
                                                       ],
                                                     ),
                                                     Positioned(
@@ -196,7 +192,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   List<Widget> _buildIndicator() {
     List<Widget> indicators = [];
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 4; i++) {
       if (currentIndex == i) {
         indicators.add(_indicator(true));
       } else {
