@@ -5,7 +5,6 @@ import 'package:todo_frontend/core/widgets/task_details_dialog.dart';
 import 'package:todo_frontend/data/models/task.dart';
 import 'package:todo_frontend/data/providers/task_provider.dart';
 import '../../../core/constants/constants.dart';
-import '../../../core/utils/toast.dart';
 import '../../../core/widgets/button_widget.dart';
 import '../../../core/widgets/input_widget.dart';
 
