@@ -6,11 +6,9 @@ class Preferences {
   // Keys for the preferences
   static const _keyIsLoggedIn = 'isLoggedIn';
   static const _keyHasSeenOnboarding = 'hasSeenOnboarding';
-  static const _keyHasSeenLoanOnboarding = 'hasSeenLoanOnboarding';
   static const _keyUserID = 'userID';
   static const _keyUsername = 'username';
   static const _keyEmail = 'email';
-  static const _keyRole = 'role';
   static const _keyTheme = 'isDarkTheme';
 
   // Initialize SharedPreferences
@@ -38,15 +36,7 @@ class Preferences {
     return _preferences?.getBool(_keyHasSeenOnboarding);
   }
 
-  // Setter for loan onboarding status
-  static Future setHasSeenLoanOnboarding(bool hasSeen) async {
-    await _preferences?.setBool(_keyHasSeenLoanOnboarding, hasSeen);
-  }
 
-  // Getter for loan onboarding status
-  static bool? getHasSeenLoanOnboarding() {
-    return _preferences?.getBool(_keyHasSeenLoanOnboarding);
-  }
 
   // Example: Setter for a user ID
   static Future setUserId(int userId) async {
@@ -75,16 +65,6 @@ class Preferences {
   // Getter for email
   static String? getEmail() {
     return _preferences?.getString(_keyEmail);
-  }
-
-  // Setter for role
-  static Future setRole(String role) async {
-    await _preferences?.setString(_keyRole, role);
-  }
-
-  // Getter for role
-  static String? getRole() {
-    return _preferences?.getString(_keyRole);
   }
 
   // Setter for theme preference

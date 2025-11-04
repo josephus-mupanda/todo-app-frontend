@@ -68,7 +68,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                               width: size.width,
                               clipBehavior: Clip.antiAliasWithSaveLayer,
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.background,
+                                color: Theme.of(context).colorScheme.surface,
                               ),
                               child: Row(
                                 children: <Widget>[
@@ -186,7 +186,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
       width: isActive ? 20 : 8,
       margin: const EdgeInsets.only(right: 5.0),
       decoration: BoxDecoration(
-        color: isActive ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.background,
+        color: isActive ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(5),
       ),
     );

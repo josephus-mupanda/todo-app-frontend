@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:todo_frontend/routes/app_routes.dart';
 import 'package:todo_frontend/screens/tasks/profile_screen.dart';
 import 'package:todo_frontend/screens/tasks/task_list_screen.dart';
 
@@ -26,15 +25,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(_appBarTitles[_currentIndex]),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        title: Text(_appBarTitles[_currentIndex], style: theme.textTheme.bodyLarge),
+        backgroundColor: Theme.of(context).cardColor,
         elevation: 0,
       ),
       body: _screens[_currentIndex],
       bottomNavigationBar: _buildBottomNavigationBar(),
-      floatingActionButton: _currentIndex == 0 ? _buildFloatingActionButton() : null,
+  
     );
   }
 
@@ -47,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha:0.1),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -67,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           backgroundColor: Theme.of(context).cardColor,
           selectedItemColor: Theme.of(context).primaryColor,
-          unselectedItemColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+          unselectedItemColor: Theme.of(context).colorScheme.onSurface.withValues(alpha:0.5),
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
           items: const [
             BottomNavigationBarItem(
@@ -81,17 +82,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildFloatingActionButton() {
-    return FloatingActionButton(
-      onPressed: () {
-        // Navigate to AddTaskScreen
-        Navigator.pushNamed(context, AppRoutes.addTask);
-      },
-      backgroundColor: Theme.of(context).primaryColor,
-      child: const Icon(Icons.add, color: Colors.white),
     );
   }
 }

@@ -97,7 +97,7 @@ class AuthService {
     }
   }
 
-  Future<void> logout(BuildContext context, String token) async {
+  Future<bool> logout(String token) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/logout'),
@@ -107,17 +107,46 @@ class AuthService {
         },
       );
 
-      final data = jsonDecode(response.body);
-      
       if (response.statusCode == 200) {
-        showSuccessToast(context, data['message'] ?? "Logged out successfully");
+        return true;
       } else {
-        showWarningToast(context, data['message'] ?? "Could not log out properly");
+        return false;
       }
-    } catch (e) {
-      showErrorToast(context, "Error: ${e.toString()}");
+    } catch (_) {
+      return false;
     }
   }
+
+  // Toast helper methods for after navigation
+  void showLogoutToast(BuildContext context) {
+    showSuccessToast(context, "Logged out successfully!");
+  }
+
+  void showLogoutErrorToast(BuildContext context, String message) {
+    showErrorToast(context, "Logout failed: $message");
+  }
+
+  // Future<void> logout(BuildContext context, String token) async {
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse('$baseUrl/logout'),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     );
+
+  //     final data = jsonDecode(response.body);
+      
+  //     if (response.statusCode == 200) {
+  //       showSuccessToast(context, data['message'] ?? "Logged out successfully");
+  //     } else {
+  //       showWarningToast(context, data['message'] ?? "Could not log out properly");
+  //     }
+  //   } catch (e) {
+  //     showErrorToast(context, "Error: ${e.toString()}");
+  //   }
+  // }
 
   Future<http.Response?> resetPassword(BuildContext context, String email) async {
     try {

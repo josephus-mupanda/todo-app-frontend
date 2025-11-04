@@ -25,19 +25,17 @@ class DropdownWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final TextStyle hintStyle = theme.inputDecorationTheme.hintStyle ??
+    final TextStyle hintStyle =
+        theme.inputDecorationTheme.hintStyle ??
         TextStyle(
-          color: theme.colorScheme.onSurface.withOpacity(0.5),
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
           fontWeight: FontWeight.normal,
           fontSize: 12,
         );
 
-    final TextStyle errorStyle = theme.inputDecorationTheme.errorStyle ??
-        TextStyle(
-          fontSize: 12,
-          height: 1,
-          color: theme.colorScheme.error,
-        );
+    final TextStyle errorStyle =
+        theme.inputDecorationTheme.errorStyle ??
+        TextStyle(fontSize: 12, height: 1, color: theme.colorScheme.error);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +47,7 @@ class DropdownWidget extends StatelessWidget {
               topLabel!,
               style: theme.textTheme.bodySmall?.copyWith(
                 fontSize: 12,
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -60,13 +58,16 @@ class DropdownWidget extends StatelessWidget {
           ),
           child: DropdownButtonFormField<String>(
             value: selectedItem,
-            icon: Icon(Icons.arrow_drop_down, color: theme.colorScheme.onSurface.withOpacity(0.5)),
+            icon: Icon(
+              Icons.arrow_drop_down,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
             decoration: InputDecoration(
               prefixIcon: prefixIcon != null
                   ? Icon(
-                prefixIcon,
-                color: theme.colorScheme.onSurface.withOpacity(0.5),
-              )
+                      prefixIcon,
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                    )
                   : null,
               hintText: hintText,
               hintStyle: hintStyle,
@@ -74,23 +75,17 @@ class DropdownWidget extends StatelessWidget {
               errorStyle: errorStyle,
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: theme.dividerColor.withOpacity(0.2),
+                  color: theme.dividerColor.withValues(alpha: 0.6),
                 ),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: theme.colorScheme.primary,
-                ),
+                borderSide: BorderSide(color: theme.colorScheme.primary),
               ),
               errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: theme.colorScheme.error,
-                ),
+                borderSide: BorderSide(color: theme.colorScheme.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: theme.colorScheme.error,
-                ),
+                borderSide: BorderSide(color: theme.colorScheme.error),
               ),
             ),
             items: items.map<DropdownMenuItem<String>>((String value) {
@@ -100,7 +95,7 @@ class DropdownWidget extends StatelessWidget {
                   value,
                   style: theme.textTheme.bodySmall?.copyWith(
                     fontSize: 12,
-                    color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               );

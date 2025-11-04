@@ -56,8 +56,12 @@ class ConfirmationDialog extends StatelessWidget {
                 Expanded(
                   child: TextButton.icon(
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: Constants.kDefaultPadding),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: Constants.kDefaultPadding,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       backgroundColor: confirmColor ?? theme.primaryColor,
                     ),
                     onPressed: () {
@@ -82,16 +86,20 @@ class ConfirmationDialog extends StatelessWidget {
                 Expanded(
                   child: TextButton.icon(
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: Constants.kDefaultPadding),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      backgroundColor: theme.colorScheme.background,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: Constants.kDefaultPadding,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      backgroundColor: theme.colorScheme.surface,
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                     icon: Icon(
                       FeatherIcons.x,
-                      color: theme.colorScheme.onSurface.withOpacity(0.5),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       size: 16,
                     ),
                     label: Text(
@@ -103,7 +111,7 @@ class ConfirmationDialog extends StatelessWidget {
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

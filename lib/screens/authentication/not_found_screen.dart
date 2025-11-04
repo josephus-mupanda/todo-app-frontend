@@ -21,7 +21,7 @@ class _NotFoundScreenState extends State<NotFoundScreen> {
     final Size size = MediaQuery.of(context).size;
     return Scaffold (
       body: Container(
-        color: theme.colorScheme.background,
+        color: theme.colorScheme.surface,
         child: SafeArea(
           child: Column(
             children: [
@@ -38,7 +38,7 @@ class _NotFoundScreenState extends State<NotFoundScreen> {
                               width: size.width,
                               clipBehavior: Clip.antiAliasWithSaveLayer,
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.background,
+                                color: Theme.of(context).colorScheme.surface,
                               ),
                               child: Row(
                                 children: <Widget>[

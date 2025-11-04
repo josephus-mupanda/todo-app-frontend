@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_frontend/data/models/auth_dto.dart';
 import 'package:todo_frontend/data/models/user.dart';
 import 'package:todo_frontend/data/services/secure_storage_service.dart';
+import 'package:todo_frontend/routes/app_routes.dart';
 import '../services/auth_service.dart';
 import 'package:http/http.dart' as http;
 
@@ -32,22 +33,56 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> logout(BuildContext context) async {
     final token = await _storage.getToken();
-    if (token != null) await _authService.logout(context, token);
     await _storage.deleteToken();
     _user = null;
     notifyListeners();
-  }
 
-  Future<http.Response?> resetPassword(BuildContext context, String email) async {
+    // Call backend only if token exists
+    if (token != null) {
+      try {
+        final success = await _authService.logout(token);
+        if (success && context.mounted) {
+          // Navigate first
+          Navigator.pushReplacementNamed(context, AppRoutes.login);
+          // Show toast after navigation
+          _authService.showLogoutToast(context);
+        }
+      } catch (e) {
+        if (context.mounted) {
+          _authService.showLogoutErrorToast(context, e.toString());
+        }
+      }
+    } else {
+      // No token: just navigate
+      if (context.mounted) {
+        Navigator.pushReplacementNamed(context, '/login');
+      }
+    }
+  }
+  // Future<void> logout(BuildContext context) async {
+  //   final token = await _storage.getToken();
+  //   if (token != null) await _authService.logout(context, token);
+  //   await _storage.deleteToken();
+  //   _user = null;
+  //   notifyListeners();
+  // }
+
+  Future<http.Response?> resetPassword(
+    BuildContext context,
+    String email,
+  ) async {
     return await _authService.resetPassword(context, email);
   }
 
-  Future<bool> changePassword(BuildContext context, String code, String newPassword) async {
+  Future<bool> changePassword(
+    BuildContext context,
+    String code,
+    String newPassword,
+  ) async {
     return await _authService.changePassword(context, code, newPassword);
   }
 
   Future<bool> confirmEmail(BuildContext context, String code) async {
     return await _authService.confirmEmail(context, code);
   }
-
 }

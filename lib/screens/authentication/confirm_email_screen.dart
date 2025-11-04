@@ -81,7 +81,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                               width: size.width,
                               clipBehavior: Clip.antiAliasWithSaveLayer,
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.background,
+                                color: Theme.of(context).colorScheme.surface,
                               ),
                               child: Row(
                                 children: [
@@ -119,7 +119,11 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                                                     Text(
                                                       'We sent a 6-digit verification code to your email address.',
                                                       style: theme.textTheme.bodyMedium?.copyWith(
-                                                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6
+
+)
+
+,
                                                       ),
                                                     ),
                                                     const SizedBox(height: 30),
@@ -158,7 +162,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                                                               TextSpan(
                                                                 text: 'Back to ',
                                                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                                                  color: theme.colorScheme.onBackground,
+                                                                  color: theme.colorScheme.onSurface,
                                                                 ),
                                                               ),
                                                               TextSpan(
@@ -282,7 +286,11 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
         Text(
           "Didn't receive the code?",
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurface.withOpacity(0.7),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6
+
+)
+
+,
           ),
         ),
         const SizedBox(height: 5),

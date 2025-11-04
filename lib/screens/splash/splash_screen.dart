@@ -14,8 +14,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
-
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -39,9 +39,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     // Decide where to navigate
     if (isLoggedIn == true) {
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
-
-
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
     } else if (hasSeenOnboarding == true) {
       Navigator.pushReplacementNamed(context, AppRoutes.login);
     } else {
@@ -57,12 +55,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Responsive(
-        mobile: MobileSplashScreen( controller :_controller),
-        tablet: TabletSplashScreen(controller: _controller,),
-        desktop: DesktopSplashScreen(controller: _controller,),
+        mobile: MobileSplashScreen(controller: _controller),
+        tablet: TabletSplashScreen(controller: _controller),
+        desktop: DesktopSplashScreen(controller: _controller),
       ),
     );
   }
@@ -75,12 +72,12 @@ class MobileSplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.surface,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(ImagePath.companyLogo,), // Replace with your logo
+            Image.asset(ImagePath.companyLogo), // Replace with your logo
             const SizedBox(height: Constants.kDefaultPadding),
             SizedBox(
               width: 250,
@@ -90,9 +87,9 @@ class MobileSplashScreen extends StatelessWidget {
                   return LinearProgressIndicator(
                     value: controller.value,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).primaryColor
+                      Theme.of(context).primaryColor,
                     ),
-                    backgroundColor:  Theme.of(context).cardColor,
+                    backgroundColor: Theme.of(context).cardColor,
                   );
                 },
               ),
@@ -111,12 +108,15 @@ class TabletSplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.surface,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(ImagePath.companyLogo, width: 200), // Replace with your logo
+            Image.asset(
+              ImagePath.companyLogo,
+              width: 200,
+            ), // Replace with your logo
             const SizedBox(height: Constants.kDefaultPadding * 1.5),
             SizedBox(
               width: 250,
@@ -126,9 +126,9 @@ class TabletSplashScreen extends StatelessWidget {
                   return LinearProgressIndicator(
                     value: controller.value,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).primaryColor
+                      Theme.of(context).primaryColor,
                     ),
-                    backgroundColor:  Theme.of(context).cardColor,
+                    backgroundColor: Theme.of(context).cardColor,
                   );
                 },
               ),
@@ -147,27 +147,34 @@ class DesktopSplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.surface,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(ImagePath.companyLogo, width: 300), // Replace with your logo
+            Image.asset(
+              ImagePath.companyLogo,
+              width: 300,
+            ), // Replace with your logo
             const SizedBox(height: Constants.kDefaultPadding),
             Text(
               "SafeHarvest QA - Food Safety and Quality Assurance System",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onBackground, // Use onBackground color
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface, // Use onBackground color
               ),
             ),
-            const SizedBox(height: Constants.kDefaultPadding/2),
+            const SizedBox(height: Constants.kDefaultPadding / 2),
             Text(
               "We Sense Food and We Fight Waste",
               style: TextStyle(
                 fontSize: 16,
-                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7), // Use onBackground with opacity
+                color: Theme.of(context).colorScheme.onSurface.withValues(
+                  alpha: 0.6,
+                ), // Use onBackground with opacity
               ),
             ),
             const SizedBox(height: Constants.kDefaultPadding * 1.5),
@@ -179,9 +186,9 @@ class DesktopSplashScreen extends StatelessWidget {
                   return LinearProgressIndicator(
                     value: controller.value,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).primaryColor
+                      Theme.of(context).primaryColor,
                     ),
-                    backgroundColor:  Theme.of(context).cardColor,
+                    backgroundColor: Theme.of(context).cardColor,
                   );
                 },
               ),

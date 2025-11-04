@@ -44,7 +44,11 @@ class InputWidget extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final TextStyle hintStyle = theme.inputDecorationTheme.hintStyle ??
         TextStyle(
-          color: theme.colorScheme.onSurface.withOpacity(0.5),
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.6
+
+)
+
+,
           fontWeight: FontWeight.normal,
           fontSize: 12,
         );
@@ -62,7 +66,11 @@ class InputWidget extends StatelessWidget {
           topLabel ?? "",
           style: theme.textTheme.bodySmall?.copyWith(
             fontSize: 12,
-            color: theme.colorScheme.onSurface.withOpacity(0.6),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6
+
+)
+
+,
           ),
         ),
         const SizedBox(height: 4.0),
@@ -76,7 +84,11 @@ class InputWidget extends StatelessWidget {
             controller: kController,
             style: theme.textTheme.bodySmall?.copyWith(
               fontSize: 12,
-              color: theme.colorScheme.onSurface.withOpacity(0.6),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6
+
+)
+
+,
             ),
             minLines: minLines,
             maxLines: maxLines,
@@ -90,14 +102,22 @@ class InputWidget extends StatelessWidget {
               prefixIcon: prefixIcon != null
                   ? Icon(
                 prefixIcon,
-                color: theme.colorScheme.onSurface.withOpacity(0.5),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6
+
+)
+
+,
               )
                   : null,
               suffixIcon: suffixIcon,
 
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: theme.dividerColor.withOpacity(0.2),
+                  color: theme.dividerColor.withValues(alpha: 0.6
+
+)
+
+,
                 ),
               ),
               focusedBorder: OutlineInputBorder(

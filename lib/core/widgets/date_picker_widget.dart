@@ -66,19 +66,17 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final TextStyle hintStyle = theme.inputDecorationTheme.hintStyle ??
+    final TextStyle hintStyle =
+        theme.inputDecorationTheme.hintStyle ??
         TextStyle(
-          color: theme.colorScheme.onSurface.withOpacity(0.5),
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
           fontWeight: FontWeight.normal,
           fontSize: 12,
         );
 
-    final TextStyle errorStyle = theme.inputDecorationTheme.errorStyle ??
-        TextStyle(
-          fontSize: 12,
-          height: 1,
-          color: theme.colorScheme.error,
-        );
+    final TextStyle errorStyle =
+        theme.inputDecorationTheme.errorStyle ??
+        TextStyle(fontSize: 12, height: 1, color: theme.colorScheme.error);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,7 +88,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
               widget.topLabel!,
               style: theme.textTheme.bodySmall?.copyWith(
                 fontSize: 12,
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -105,9 +103,9 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
             decoration: InputDecoration(
               prefixIcon: widget.prefixIcon != null
                   ? Icon(
-                widget.prefixIcon,
-                color: theme.colorScheme.onSurface.withOpacity(0.5),
-              )
+                      widget.prefixIcon,
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                    )
                   : null,
               hintText: widget.hintText,
               hintStyle: hintStyle,
@@ -115,23 +113,17 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
               errorStyle: errorStyle,
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: theme.dividerColor.withOpacity(0.2),
+                  color: theme.dividerColor.withValues(alpha: 0.6),
                 ),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: theme.colorScheme.primary,
-                ),
+                borderSide: BorderSide(color: theme.colorScheme.primary),
               ),
               errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: theme.colorScheme.error,
-                ),
+                borderSide: BorderSide(color: theme.colorScheme.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: theme.colorScheme.error,
-                ),
+                borderSide: BorderSide(color: theme.colorScheme.error),
               ),
             ),
             onTap: () => _selectDate(context),

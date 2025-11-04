@@ -78,13 +78,17 @@ class MyDialog extends StatelessWidget {
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: Constants.kDefaultPadding),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          backgroundColor: theme.colorScheme.background,
+                          backgroundColor: theme.colorScheme.surface,
                           // foregroundColor: kTextColor,
                         ),
                         onPressed: () {
                           Navigator.of(context).pop();
                           },
-                        icon:Icon( FeatherIcons.x, color:theme.colorScheme.onSurface.withOpacity(0.5), size: 16,),
+                        icon:Icon( FeatherIcons.x, color:theme.colorScheme.onSurface.withValues(alpha: 0.6
+
+)
+
+, size: 16,),
                         label: Text(
                           nameNo,
                           style: theme.textTheme.bodyMedium,

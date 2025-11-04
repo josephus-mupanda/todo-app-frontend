@@ -20,7 +20,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _taskController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
+
   String _searchQuery = '';
   TaskFilter _currentFilter = TaskFilter.all;
   bool _isLoading = false;
@@ -38,44 +38,57 @@ class _TaskListScreenState extends State<TaskListScreen> {
       final taskProvider = Provider.of<TaskProvider>(context, listen: false);
       await taskProvider.fetchTasks(context);
     } catch (e) {
-      // Error is handled in the service
+      // Error handled in service
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _addTask() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      setState(() => _isLoading = true);
+      try {
+        final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+        await taskProvider.addTask(context, _taskController.text.trim());
+        if (mounted) {
+          setState(() {
+            _showAddTaskForm = false;
+            _taskController.clear();
+          });
+        }
+      } catch (e) {
+        // Error handled
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    
+    final theme = Theme.of(context);
     return Scaffold(
       body: Container(
         constraints: const BoxConstraints(maxWidth: Constants.kMaxWidth),
         child: Column(
           children: [
-            // Search and Filter Section
+            // Search + Filter
             _buildSearchFilterSection(theme),
-            
-            // Add Task Form (Conditional)
-            if (_showAddTaskForm) _buildAddTaskForm(theme),
-            
-            // Tasks List
-            Expanded(
-              child: _buildTasksList(theme),
-            ),
+
+            // Add Task Form
+            if (_showAddTaskForm)
+              Expanded(child: _buildAddTaskForm(theme)),
+
+            // Task List
+            Expanded(child: _buildTasksList(theme)),
           ],
         ),
       ),
-      floatingActionButton: _showAddTaskForm ? null : FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            _showAddTaskForm = true;
-          });
+          setState(() => _showAddTaskForm = true);
         },
-        backgroundColor: theme.primaryColor,
-        child: const Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -91,7 +104,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha:0.06),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -99,7 +112,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
       ),
       child: Column(
         children: [
-          // Search Bar
           Row(
             children: [
               Expanded(
@@ -109,16 +121,14 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   hintText: 'Search tasks...',
                   prefixIcon: Icons.search,
                   onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value;
-                    });
+                    setState(() => _searchQuery = value);
                   },
                 ),
               ),
               const SizedBox(width: 12),
               Container(
                 decoration: BoxDecoration(
-                  color: theme.primaryColor.withOpacity(0.1),
+                  color: theme.primaryColor.withValues(alpha:0.6),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: IconButton(
@@ -129,10 +139,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               ),
             ],
           ),
-          
           const SizedBox(height: 16),
-          
-          // Filter Chips
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -149,7 +156,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     selected: _currentFilter == filter,
                     onSelected: (selected) {
                       setState(() {
-                        _currentFilter = selected ? filter : TaskFilter.all;
+                        _currentFilter =
+                            selected ? filter : TaskFilter.all;
                       });
                     },
                     backgroundColor: theme.cardColor,
@@ -166,78 +174,80 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   Widget _buildAddTaskForm(ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.all(Constants.kDefaultPadding),
-      margin: const EdgeInsets.all(Constants.kDefaultPadding),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.primaryColor.withOpacity(0.2)),
-      ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Add New Task',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.all(Constants.kDefaultPadding),
+        margin: const EdgeInsets.all(Constants.kDefaultPadding),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: theme.primaryColor.withValues(alpha:0.6)),
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Add New Task',
+                      style: theme.textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.w700),
+                    ),
                   ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _showAddTaskForm = false;
-                      _taskController.clear();
-                    });
-                  },
-                  icon: Icon(Icons.close, color: theme.colorScheme.onSurface.withOpacity(0.5)),
-                ),
-              ],
-            ),
-            
-            const SizedBox(height: 16),
-            
-            InputWidget(
-              kController: _taskController,
-              obscureText: false,
-              hintText: 'Enter task title...',
-              prefixIcon: Icons.task,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Task title is required';
-                }
-                return null;
-              },
-            ),
-            
-            const SizedBox(height: 16),
-            
-            Row(
-              children: [
-                Expanded(
-                  child: AppButton(
-                    onPressed: _addTask,
-                    text: 'Create Task',
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _showAddTaskForm = false;
+                        _taskController.clear();
+                      });
+                    },
+                    icon: Icon(
+                      Icons.close,
+                      color: theme.colorScheme.onSurface.withValues(alpha:(0.6),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                AppButton(
-                  onPressed: () {
-                    setState(() {
-                      _showAddTaskForm = false;
-                      _taskController.clear();
-                    });
-                  },
-                  text: 'Cancel',
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+              const SizedBox(height: 16),
+              InputWidget(
+                kController: _taskController,
+                obscureText: false,
+                hintText: 'Enter task title...',
+                prefixIcon: Icons.task,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Task title is required';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child:
+                        AppButton(onPressed: _addTask, text: 'Create Task'),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: AppButton(
+                      onPressed: () {
+                        setState(() {
+                          _showAddTaskForm = false;
+                          _taskController.clear();
+                        });
+                      },
+                      text: 'Cancel',
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -247,22 +257,17 @@ class _TaskListScreenState extends State<TaskListScreen> {
     return Consumer<TaskProvider>(
       builder: (context, taskProvider, child) {
         final filteredTasks = _getFilteredTasks(taskProvider.tasks);
-        
-        if (_isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        
-        if (filteredTasks.isEmpty) {
-          return _buildEmptyState(theme);
-        }
-        
+
+        if (_isLoading) return const Center(child: CircularProgressIndicator());
+        if (filteredTasks.isEmpty) return _buildEmptyState(theme);
+
         return RefreshIndicator(
           onRefresh: _loadTasks,
           child: ListView.separated(
             padding: const EdgeInsets.all(Constants.kDefaultPadding),
             itemCount: filteredTasks.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            itemBuilder: (_, index) {
               final task = filteredTasks[index];
               return _buildTaskCard(theme, task);
             },
@@ -278,30 +283,30 @@ class _TaskListScreenState extends State<TaskListScreen> {
       direction: DismissDirection.endToStart,
       background: Container(
         decoration: BoxDecoration(
-          color: Colors.red.withOpacity(0.1),
+          color: Colors.red.withValues(alpha:0.6),
           borderRadius: BorderRadius.circular(16),
         ),
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         child: const Icon(Icons.delete, color: Colors.red),
       ),
-      onDismissed: (direction) {
-        _showDeleteConfirmation(task);
-      },
+      onDismissed: (_) => _showDeleteConfirmation(task),
       child: Card(
         color: theme.cardColor,
         elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: ListTile(
           contentPadding: const EdgeInsets.all(16),
           leading: _buildCompletionIndicator(theme, task),
           title: Text(
             task.title,
             style: theme.textTheme.bodyLarge?.copyWith(
-              decoration: task.completed ? TextDecoration.lineThrough : TextDecoration.none,
-              color: task.completed ? theme.colorScheme.onSurface.withOpacity(0.5) : null,
+              decoration: task.completed
+                  ? TextDecoration.lineThrough
+                  : TextDecoration.none,
+              color: task.completed
+                  ? theme.colorScheme.onSurface.withValues(alpha:0.6)
+                  : null,
             ),
           ),
           trailing: Row(
@@ -313,7 +318,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   task.completed ? Icons.undo : Icons.check_circle,
                   color: task.completed ? Colors.orange : Colors.green,
                 ),
-                tooltip: task.completed ? 'Mark as Incomplete' : 'Mark as Complete',
+                tooltip:
+                    task.completed ? 'Mark as Incomplete' : 'Mark as Complete',
               ),
               IconButton(
                 onPressed: () => _showDeleteConfirmation(task),
@@ -333,9 +339,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: task.completed 
-            ? Colors.green.withOpacity(0.1)
-            : Colors.orange.withOpacity(0.1),
+        color: task.completed
+            ? Colors.green.withValues(alpha:0.1)
+            : Colors.orange.withValues(alpha:0.6),
         shape: BoxShape.circle,
       ),
       child: Icon(
@@ -353,14 +359,14 @@ class _TaskListScreenState extends State<TaskListScreen> {
         children: [
           Icon(
             Icons.task_alt,
-            size: 80,
-            color: theme.colorScheme.onSurface.withOpacity(0.3),
+            size: 60,
+            color: theme.colorScheme.onSurface.withValues(alpha: .6),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           Text(
             'No tasks found',
             style: theme.textTheme.titleLarge?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.5),
+              color: theme.colorScheme.onSurface.withValues(alpha: .6),
             ),
           ),
           const SizedBox(height: 8),
@@ -369,43 +375,31 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 ? 'Try adjusting your search or filters'
                 : 'Create your first task to get started!',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.5),
+              color: theme.colorScheme.onSurface.withValues(alpha: .6),
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 20),
-          AppButton(
-            onPressed: () {
-              setState(() {
-                _showAddTaskForm = true;
-              });
-            },
-            text: 'Create Task',
-          ),
+        
         ],
       ),
     );
   }
 
   List<Task> _getFilteredTasks(List<Task> tasks) {
-    var filtered = tasks.where((task) {
-      final matchesSearch = task.title.toLowerCase().contains(_searchQuery.toLowerCase());
-      
+    final filtered = tasks.where((task) {
+      final matchesSearch =
+          task.title.toLowerCase().contains(_searchQuery.toLowerCase());
       final matchesFilter = _currentFilter == TaskFilter.all ||
           (_currentFilter == TaskFilter.completed && task.completed) ||
           (_currentFilter == TaskFilter.pending && !task.completed);
-      
       return matchesSearch && matchesFilter;
     }).toList();
-    
-    // Sort by completion status (pending first) then by title
+
     filtered.sort((a, b) {
-      if (a.completed != b.completed) {
-        return a.completed ? 1 : -1;
-      }
+      if (a.completed != b.completed) return a.completed ? 1 : -1;
       return a.title.compareTo(b.title);
     });
-    
+
     return filtered;
   }
 
@@ -420,51 +414,14 @@ class _TaskListScreenState extends State<TaskListScreen> {
     }
   }
 
-  Future<void> _addTask() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      setState(() => _isLoading = true);
-      
-      try {
-        final taskProvider = Provider.of<TaskProvider>(context, listen: false);
-        await taskProvider.addTask(context, _taskController.text.trim());
-        
-        if (context.mounted) {
-          setState(() {
-            _showAddTaskForm = false;
-            _taskController.clear();
-          });
-        }
-      } catch (e) {
-        // Error is handled in the service
-      } finally {
-        if (mounted) {
-          setState(() => _isLoading = false);
-        }
-      }
-    }
-  }
-
   Future<void> _toggleTaskCompletion(Task task) async {
-    try {
-      // Since your current API doesn't have update task status endpoint,
-      // we'll need to delete and recreate with opposite status
-      // Or you can add an update endpoint to your backend
-      showInfoToast(context, "Update task feature coming soon!");
-      
-      // TODO: Implement when update endpoint is available
-      // final taskProvider = Provider.of<TaskProvider>(context, listen: false);
-      // await taskProvider.updateTaskStatus(context, task.id, !task.completed);
-    } catch (e) {
-      if (context.mounted) {
-        showErrorToast(context, "Failed to update task");
-      }
-    }
+    showInfoToast(context, "Update task feature coming soon!");
   }
 
   void _showTaskDetails(Task task) {
     showDialog(
       context: context,
-      builder: (context) => TaskDetailsDialog(
+      builder: (_) => TaskDetailsDialog(
         task: task,
         onEdit: () => _editTask(task),
         onToggleComplete: () => _toggleTaskCompletion(task),
@@ -476,9 +433,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
   void _showDeleteConfirmation(Task task) {
     showDialog(
       context: context,
-      builder: (context) => DeleteConfirmationDialog(
+      builder: (_) => DeleteConfirmationDialog(
         title: 'Delete Task',
-        content: 'This action cannot be undone. Are you sure you want to delete this task?',
+        content:
+            'This action cannot be undone. Are you sure you want to delete this task?',
         itemName: task.title,
         onConfirm: () => _deleteTask(task),
       ),
@@ -489,13 +447,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
     try {
       final taskProvider = Provider.of<TaskProvider>(context, listen: false);
       await taskProvider.deleteTask(context, task.id);
-    } catch (e) {
-      // Error is handled in the service
-    }
+    } catch (_) {}
   }
 
   void _editTask(Task task) {
-    // TODO: Implement edit task functionality
     showInfoToast(context, "Edit task feature coming soon!");
   }
 
@@ -507,9 +462,4 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 }
 
-// Add this enum for filtering
-enum TaskFilter {
-  all,
-  pending,
-  completed,
-}
+enum TaskFilter { all, pending, completed }

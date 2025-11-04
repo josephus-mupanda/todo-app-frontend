@@ -55,7 +55,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: size.width,
                               clipBehavior: Clip.antiAliasWithSaveLayer,
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.background,
+                                color: Theme.of(context).colorScheme.surface,
                               ),
                               child: Row(
                                 children: [
@@ -115,7 +115,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                       suffixIcon: IconButton(
                                                         icon: Icon(
                                                           showPassword ? Icons.visibility : Icons.visibility_off,
-                                                          color: theme.colorScheme.onSurface.withOpacity(0.5),
+                                                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6
+
+)
+
+,
                                                         ),
                                                         onPressed: () {
                                                           setState(() {
@@ -140,7 +144,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                       suffixIcon: IconButton(
                                                         icon: Icon(
                                                           showConfirmPassword ? Icons.visibility : Icons.visibility_off,
-                                                          color: theme.colorScheme.onSurface.withOpacity(0.5),
+                                                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6
+
+)
+
+,
                                                         ),
                                                         onPressed: () {
                                                           setState(() {
@@ -184,7 +192,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                               TextSpan(
                                                                 text: 'Forgot Password? ',
                                                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                                                  color: theme.colorScheme.onBackground,
+                                                                  color: theme.colorScheme.onSurface,
                                                                 ),
                                                               ),
                                                               TextSpan(
@@ -230,7 +238,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                           Text(
                                                             'Sign up with Google',
                                                             style: theme.textTheme.bodyMedium?.copyWith(
-                                                              color: theme.colorScheme.onBackground,
+                                                              color: theme.colorScheme.onSurface,
                                                             ),
                                                           ),
                                                           const Spacer(),
@@ -253,7 +261,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                               TextSpan(
                                                                 text: 'Have an Account? ',
                                                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                                                  color: theme.colorScheme.onBackground,
+                                                                  color: theme.colorScheme.onSurface,
                                                                 ),
                                                               ),
                                                               TextSpan(

@@ -8,7 +8,7 @@ void showLoadingDialog(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         content: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [

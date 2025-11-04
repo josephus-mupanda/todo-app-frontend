@@ -67,7 +67,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               width: size.width,
                               clipBehavior: Clip.antiAliasWithSaveLayer,
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.background,
+                                color: Theme.of(context).colorScheme.surface,
                               ),
                               child: Row(
                                 children: [
@@ -106,7 +106,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                       Container(
                                                         padding: const EdgeInsets.all(12),
                                                         decoration: BoxDecoration(
-                                                          color: theme.primaryColor.withOpacity(0.1),
+                                                          color: theme.primaryColor.withValues(alpha: 0.6
+
+)
+
+,
                                                           borderRadius: BorderRadius.circular(8),
                                                           border: Border.all(color: theme.primaryColor),
                                                         ),
@@ -133,7 +137,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                       Text(
                                                         'Enter your new password below.',
                                                         style: theme.textTheme.bodyMedium?.copyWith(
-                                                          color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6
+
+)
+
+,
                                                         ),
                                                       ),
                                                     const SizedBox(height: 30),
@@ -147,7 +155,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                           showPassword
                                                               ? Icons.visibility
                                                               : Icons.visibility_off,
-                                                          color: theme.colorScheme.onSurface.withOpacity(0.5),
+                                                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6
+
+)
+
+,
                                                         ),
                                                         onPressed: () {
                                                           setState(() {
@@ -177,7 +189,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                           showConfirmPassword
                                                               ? Icons.visibility
                                                               : Icons.visibility_off,
-                                                          color: theme.colorScheme.onSurface.withOpacity(0.5),
+                                                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6
+
+)
+
+,
                                                         ),
                                                         onPressed: () {
                                                           setState(() {
@@ -222,7 +238,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                               TextSpan(
                                                                 text: 'Back to ',
                                                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                                                  color: theme.colorScheme.onBackground,
+                                                                  color: theme.colorScheme.onSurface,
                                                                 ),
                                                               ),
                                                               TextSpan(

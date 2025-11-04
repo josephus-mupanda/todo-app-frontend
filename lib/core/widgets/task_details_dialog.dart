@@ -26,11 +26,7 @@ class TaskDetailsDialog extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: Constants.kDefaultPadding / 2),
-            Icon(
-              FeatherIcons.fileText,
-              size: 40,
-              color: theme.primaryColor,
-            ),
+            Icon(FeatherIcons.fileText, size: 40, color: theme.primaryColor),
             const SizedBox(height: Constants.kDefaultPadding / 2),
             Text(
               'Task Details',
@@ -50,7 +46,7 @@ class TaskDetailsDialog extends StatelessWidget {
             Text(
               'Title',
               style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -62,12 +58,12 @@ class TaskDetailsDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: Constants.kDefaultPadding),
-            
+
             // Status
             Text(
               'Status',
               style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -75,9 +71,9 @@ class TaskDetailsDialog extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: task.completed 
-                    ? Colors.green.withOpacity(0.1)
-                    : Colors.orange.withOpacity(0.1),
+                color: task.completed
+                    ? Colors.green.withValues(alpha: 0.1)
+                    : Colors.orange.withValues(alpha: 0.6),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: task.completed ? Colors.green : Colors.orange,
@@ -88,7 +84,9 @@ class TaskDetailsDialog extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    task.completed ? FeatherIcons.checkCircle : FeatherIcons.clock,
+                    task.completed
+                        ? FeatherIcons.checkCircle
+                        : FeatherIcons.clock,
                     size: 14,
                     color: task.completed ? Colors.green : Colors.orange,
                   ),
@@ -104,12 +102,12 @@ class TaskDetailsDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: Constants.kDefaultPadding),
-            
+
             // Task ID
             Text(
               'Task ID',
               style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -117,7 +115,7 @@ class TaskDetailsDialog extends StatelessWidget {
             Text(
               task.id,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 fontFamily: 'Monospace',
               ),
             ),
@@ -132,14 +130,20 @@ class TaskDetailsDialog extends StatelessWidget {
               child: TextButton.icon(
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  backgroundColor: theme.primaryColor.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  backgroundColor: theme.primaryColor.withValues(alpha: 0.6),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
                   onEdit();
                 },
-                icon: Icon(FeatherIcons.edit, color: theme.primaryColor, size: 16),
+                icon: Icon(
+                  FeatherIcons.edit,
+                  color: theme.primaryColor,
+                  size: 16,
+                ),
                 label: Text(
                   'Edit',
                   style: theme.textTheme.bodyMedium?.copyWith(
@@ -150,16 +154,18 @@ class TaskDetailsDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(width: Constants.kDefaultPadding / 2),
-            
+
             // Toggle Complete Button
             Expanded(
               child: TextButton.icon(
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  backgroundColor: task.completed 
-                      ? Colors.orange.withOpacity(0.1)
-                      : Colors.green.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  backgroundColor: task.completed
+                      ? Colors.orange.withValues(alpha: 0.1)
+                      : Colors.green.withValues(alpha: 0.6),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -182,13 +188,15 @@ class TaskDetailsDialog extends StatelessWidget {
           ],
         ),
         const SizedBox(height: Constants.kDefaultPadding / 2),
-        
+
         // Delete Button
         TextButton.icon(
           style: TextButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            backgroundColor: Colors.red.withOpacity(0.1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            backgroundColor: Colors.red.withValues(alpha: 0.6),
             foregroundColor: Colors.red,
           ),
           onPressed: () {

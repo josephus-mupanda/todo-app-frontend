@@ -5,6 +5,7 @@ import 'package:todo_frontend/screens/authentication/login_screen.dart';
 import 'package:todo_frontend/screens/authentication/not_found_screen.dart';
 import 'package:todo_frontend/screens/authentication/register_screen.dart';
 import 'package:todo_frontend/screens/authentication/reset_password_screen.dart';
+import 'package:todo_frontend/screens/onboarding/onboarding_screen.dart';
 import 'package:todo_frontend/screens/splash/splash_screen.dart';
 import 'package:todo_frontend/screens/tasks/home_screen.dart';
 import 'package:todo_frontend/screens/tasks/profile_screen.dart';
@@ -19,6 +20,9 @@ class RouteGenerator {
     switch (settings.name) {
       case AppRoutes.splash:
         return _buildPageRoute(const SplashScreen(), settings);
+
+      case AppRoutes.onboarding:
+        return _buildPageRoute(const OnBoardingScreen(), settings);
 
       case AppRoutes.login:
         return _buildPageRoute(const LoginScreen(), settings);
